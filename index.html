@@ -34,15 +34,12 @@
     $("form#rawr").submit(function() {
       var csv_colors = $("#colors").val();
       var csv_data = $("#data").val();
-      console.log(csv_colors);
-      console.log(csv_data);
 
       var chart, colors, data, height, margin, width;
       colors = _(d3.csv.parse(csv_colors)).reduce((function(result, pair) {
         result[pair.title] = pair.color;
         return result;
       }), {});
-      console.log(colors);
       data = d3.csv.parse(csv_data).map(function(d) {
         return {
           title: d.title,
@@ -50,13 +47,13 @@
           height: parseFloat(d.height)
         };
       });
-      console.log(data);
+
       margin = 25;
       width = 800;
       height = 500;
-      console.log(window);
-      console.log(window.Chart);
-      chart = new window.Chart(d3.select('div'), width, height, margin);
+
+      $('div#chart').empty();
+      chart = new window.Chart(d3.select('div#chart'), width, height, margin);
       chart.draw(data, colors);
       return false;
     });
