@@ -8,13 +8,6 @@ class Chart
       .style("font-size", "11")
 
   draw: (data, styles) ->
-    addStartingX = (data) ->
-      accumulator = 0
-      _(data).map((d) ->
-        d.start_x = accumulator
-        accumulator += d.width
-      )    
-
     addDisplayText = (data) ->
       previous_t = ""
       _(data).each((d) -> 
@@ -25,7 +18,6 @@ class Chart
           d.display_text = ""
       )
 
-    addStartingX(data)
     addDisplayText(data)
 
     totalX = d3.sum(data, (d) -> d.width)
@@ -60,12 +52,25 @@ class Chart
         .attr("alignment-baseline", "middle")
         .text(String)
 
-  drawDataRectangles: (data, styles) ->
+  drawDataRectangles: (data, styles, className = 'layer1') ->
+    addStartingX = (data) ->
+      accumulator = 0
+      _(data).map((d) ->
+        d.start_x = accumulator
+        accumulator += d.width
+      )    
+    addStartingX(data)
+
+
     xScale = @xScale
     yScale = @yScale
-    @chart.selectAll('rect')
+
+    console.log(data)
+
+    @chart.selectAll('.' + className)
         .data(data)
       .enter().append("rect")
+        .attr("class", className)
         .attr("x", (d) -> xScale(d.start_x))
         .attr("width", (d) -> xScale(d.start_x + d.width) - xScale(d.start_x))
         .attr("y", (d) -> yScale(d.height))

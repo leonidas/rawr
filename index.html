@@ -14,14 +14,38 @@
       <tr>
         <td>
           <label>
-            Data<br>
-            <textarea rows=20 cols=60 id="data"></textarea>
+            Base data<br>
+            <textarea rows=20 cols=30 id="data">
+title,width,height
+Foo,96,50
+Bar,51,50
+Bar,12.5,73
+Bar,156,93
+Bar,67.5,63
+Zed,32,145
+Baz,335,100
+Baz,157.50,65</textarea>
+          </label>
+        </td>
+        <td>
+          <label>
+            Overlay data<br>
+            <textarea rows=20 cols=30 id="data2">
+title,width,height
+Transparent,600,30
+Transparent,200,20</textarea>
           </label>
         </td>
         <td>
           <label>
             Styles<br>
-            <textarea rows=20 cols=40 id="styles"></textarea>
+            <textarea rows=20 cols=50 id="styles">
+title,style
+Foo,fill: #E9D;
+Bar,fill: #79F;
+Zed,fill: #B84;
+Baz,fill: #FD4;
+Transparent,fill:red;stroke:red;fill-opacity:0.2;</textarea>
           </label>
         </td>
       </tr>
@@ -34,6 +58,7 @@
     $("form#rawr").submit(function() {
       var csv_styles = $("#styles").val();
       var csv_data = $("#data").val();
+      var csv_data2 = $("#data2").val();
 
       var chart, styles, data, height, margin, width;
       styles = _(d3.csv.parse(csv_styles)).reduce((function(result, pair) {
@@ -48,6 +73,14 @@
         };
       });
 
+      data2 = d3.csv.parse(csv_data2).map(function(d) {
+        return {
+          title: d.title,
+          width: parseFloat(d.width),
+          height: parseFloat(d.height)
+        };
+      });
+
       margin = 25;
       width = 800;
       height = 500;
@@ -55,6 +88,7 @@
       $('div#chart').empty();
       chart = new window.Chart(d3.select('div#chart'), width, height, margin);
       chart.draw(data, styles);
+      chart.drawDataRectangles(data2, styles, "layer2");
       return false;
     });
   </script>
