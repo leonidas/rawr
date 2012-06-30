@@ -1,0 +1,64 @@
+<!DOCTYPE html5>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>D3 test</title>
+  <script src="node_modules/underscore/underscore-min.js"></script>
+  <script src="node_modules/d3/d3.v2.min.js"></script>
+  <script src="lib/rawr.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+</head>
+<body>
+  <table>
+    <tr>
+      <td>
+        <label>
+          Data<br>
+          <textarea rows=20 cols=60 id="data"></textarea>
+        </label>
+      </td>
+      <td>
+        <label>
+          Colors<br>
+          <textarea rows=20 cols=40 id="colors"></textarea>
+        </label>
+      </td>
+    </tr>
+  </table>
+  <a href="#" id="rawrlink">Draw!</a>
+  </form>
+
+  <div id="chart"></div>
+  <script>
+    $("#rawrlink").click(function() {
+      var csv_colors = $("#colors").val();
+      var csv_data = $("#data").val();
+      console.log(csv_colors);
+      console.log(csv_data);
+
+      var chart, colors, data, height, margin, width;
+      colors = _(d3.csv.parse(csv_colors)).reduce((function(result, pair) {
+        result[pair.title] = pair.color;
+        return result;
+      }), {});
+      console.log(colors);
+      data = d3.csv.parse(csv_data).map(function(d) {
+        return {
+          title: d.title,
+          width: parseFloat(d.width),
+          height: parseFloat(d.height)
+        };
+      });
+      console.log(data);
+      margin = 25;
+      width = 800;
+      height = 500;
+      console.log(window);
+      console.log(window.Chart);
+      chart = new window.Chart(d3.select('div'), width, height, margin);
+      chart.draw(data, colors);
+      return false;
+    });
+  </script>
+</body>
+</html>

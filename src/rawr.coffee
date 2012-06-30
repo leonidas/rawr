@@ -1,7 +1,7 @@
 
 class Chart
-  constructor: (@width, @height, @margin) ->
-    @chart = d3.select('body').append('svg:svg')
+  constructor: (where, @width, @height, @margin) ->
+    @chart = where.append('svg:svg')
       .attr('width', @width)
       .attr('height', @height)
       .style("font-family", "Helvetica")
@@ -81,31 +81,4 @@ class Chart
           .text((d) -> d.display_text)
           .attr("transform", "rotate(270)")
 
-
-jQuery ->
-
-  d3.text "colors.csv", (csv_colors) ->
-    console.log(csv_colors)
-    d3.text "data.csv", (csv_data) ->
-      console.log(csv_data)
-
-      colors = _(d3.csv.parse(csv_colors)).reduce(
-        ((result, pair) -> 
-          result[pair.title] = pair.color
-          result),
-        {}
-      )
-      console.log(colors)
-
-      data = d3.csv.parse(csv_data).map (d) ->
-        title: d.title
-        width: parseFloat d.width
-        height: parseFloat d.height
-      console.log(data)
-
-      margin = 25
-      width = 800
-      height = 500
-
-      chart = new Chart(width, height, margin)
-      chart.draw(data, colors)
+window.Chart = Chart
