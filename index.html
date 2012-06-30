@@ -9,28 +9,29 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
 </head>
 <body>
-  <table>
-    <tr>
-      <td>
-        <label>
-          Data<br>
-          <textarea rows=20 cols=60 id="data"></textarea>
-        </label>
-      </td>
-      <td>
-        <label>
-          Colors<br>
-          <textarea rows=20 cols=40 id="colors"></textarea>
-        </label>
-      </td>
-    </tr>
-  </table>
-  <a href="#" id="rawrlink">Draw!</a>
+  <form id="rawr">
+    <table>
+      <tr>
+        <td>
+          <label>
+            Data<br>
+            <textarea rows=20 cols=60 id="data"></textarea>
+          </label>
+        </td>
+        <td>
+          <label>
+            Colors<br>
+            <textarea rows=20 cols=40 id="colors"></textarea>
+          </label>
+        </td>
+      </tr>
+    </table>
+    <input type="submit" value="Draw"></a>
   </form>
 
   <div id="chart"></div>
   <script>
-    $("#rawrlink").click(function() {
+    $("form#rawr").submit(function() {
       var csv_colors = $("#colors").val();
       var csv_data = $("#data").val();
       console.log(csv_colors);
