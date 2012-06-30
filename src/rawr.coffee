@@ -31,36 +31,38 @@ class Chart
     totalX = d3.sum(data, (d) -> d.width)
     maxY   = d3.max(data, (d) -> d.height)
 
-    xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
-    yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
+    @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
+    @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
 
-    @drawXLabels(xScale)
-    @drawYLabels(yScale)
-    @drawDataRectangles(data, styles, xScale, yScale)
-    @drawRectangleLabels(data, xScale)
+    @drawXLabels()
+    @drawYLabels()
+    @drawDataRectangles(data, styles)
+    @drawRectangleLabels(data)
 
-  drawXLabels: (xScale) ->
+  drawXLabels: () ->
     @chart.selectAll(".x-label")
-      .data(xScale.ticks(10))
+      .data(@xScale.ticks(10))
     .enter().append("text")
       .attr("class", "x-label")
-      .attr("x", xScale)
+      .attr("x", @xScale)
       .attr("y", @height - @margin + 15)
       .attr("text-anchor", "middle")
       .text(String)
 
-  drawYLabels: (yScale) ->
+  drawYLabels: () ->
     @chart.selectAll(".y-label")
-        .data(yScale.ticks(10))
+        .data(@yScale.ticks(10))
       .enter().append("text")
         .attr("class", "y-label")
         .attr("x", @margin - 5)
-        .attr("y", yScale)
+        .attr("y", @yScale)
         .attr("text-anchor", "end")
         .attr("alignment-baseline", "middle")
         .text(String)
 
-  drawDataRectangles: (data, styles, xScale, yScale) ->
+  drawDataRectangles: (data, styles) ->
+    xScale = @xScale
+    yScale = @yScale
     @chart.selectAll('rect')
         .data(data)
       .enter().append("rect")
@@ -70,7 +72,8 @@ class Chart
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
         .attr("style", (d) -> styles[d.title])
 
-  drawRectangleLabels: (data, xScale) ->
+  drawRectangleLabels: (data) ->
+    xScale = @xScale
     labelY = @height - @margin - 3
     @chart.selectAll('.box-label')
         .data(data)
