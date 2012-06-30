@@ -20,8 +20,8 @@
         </td>
         <td>
           <label>
-            Colors<br>
-            <textarea rows=20 cols=40 id="colors"></textarea>
+            Styles<br>
+            <textarea rows=20 cols=40 id="styles"></textarea>
           </label>
         </td>
       </tr>
@@ -32,12 +32,12 @@
   <div id="chart"></div>
   <script>
     $("form#rawr").submit(function() {
-      var csv_colors = $("#colors").val();
+      var csv_styles = $("#styles").val();
       var csv_data = $("#data").val();
 
-      var chart, colors, data, height, margin, width;
-      colors = _(d3.csv.parse(csv_colors)).reduce((function(result, pair) {
-        result[pair.title] = pair.color;
+      var chart, styles, data, height, margin, width;
+      styles = _(d3.csv.parse(csv_styles)).reduce((function(result, pair) {
+        result[pair.title] = pair.style;
         return result;
       }), {});
       data = d3.csv.parse(csv_data).map(function(d) {
@@ -54,7 +54,7 @@
 
       $('div#chart').empty();
       chart = new window.Chart(d3.select('div#chart'), width, height, margin);
-      chart.draw(data, colors);
+      chart.draw(data, styles);
       return false;
     });
   </script>

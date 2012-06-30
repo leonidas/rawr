@@ -7,7 +7,7 @@ class Chart
       .style("font-family", "Helvetica")
       .style("font-size", "11")
 
-  draw: (data, colors) ->
+  draw: (data, styles) ->
     addStartingX = (data) ->
       accumulator = 0
       _(data).map((d) ->
@@ -36,7 +36,7 @@ class Chart
 
     @drawXLabels(xScale)
     @drawYLabels(yScale)
-    @drawDataRectangles(data, colors, xScale, yScale)
+    @drawDataRectangles(data, styles, xScale, yScale)
     @drawRectangleLabels(data, xScale)
 
   drawXLabels: (xScale) ->
@@ -60,7 +60,7 @@ class Chart
         .attr("alignment-baseline", "middle")
         .text(String)
 
-  drawDataRectangles: (data, colors, xScale, yScale) ->
+  drawDataRectangles: (data, styles, xScale, yScale) ->
     @chart.selectAll('rect')
         .data(data)
       .enter().append("rect")
@@ -68,7 +68,7 @@ class Chart
         .attr("width", (d) -> xScale(d.start_x + d.width) - xScale(d.start_x))
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
-        .style("fill", (d) -> colors[d.title])
+        .attr("style", (d) -> styles[d.title])
 
   drawRectangleLabels: (data, xScale) ->
     labelY = @height - @margin - 3
