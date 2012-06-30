@@ -71,12 +71,13 @@ class Chart
         .style("fill", (d) -> colors[d.title])
 
   drawRectangleLabels: (data, xScale) ->
+    labelY = @height - @margin - 3
     @chart.selectAll('.box-label')
         .data(data)
       .enter().append("g")
         .attr("class", "box-label")
         .attr("transform", (d) -> 
-          "translate(#{xScale(d.start_x) + 11},#{@height - @margin - 3})")
+          "translate(#{xScale(d.start_x) + 11},#{labelY})")
         .append("text")
           .text((d) -> d.display_text)
           .attr("transform", "rotate(270)")
