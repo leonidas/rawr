@@ -65,27 +65,27 @@ class Chart
 
     console.log(data)
 
-    @chart.selectAll('.' + className)
+    @rectG = @chart.selectAll('.' + className)
         .data(data)
-      .enter().append("rect")
-        .attr("class", className)
-        .attr("x", (d) -> xScale(d.start_x))
-        .attr("width", (d) -> xScale(d.start_x + d.width) - xScale(d.start_x))
-        .attr("y", (d) -> yScale(d.height))
-        .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
-        .attr("style", (d) -> styles[d.title])
+      .enter().append("g")
+
+    @rectG.append("rect")
+      .attr("class", className)
+      .attr("x", (d) -> xScale(d.start_x))
+      .attr("width", (d) -> xScale(d.start_x + d.width) - xScale(d.start_x))
+      .attr("y", (d) -> yScale(d.height))
+      .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
+      .attr("style", (d) -> styles[d.title])
 
   drawRectangleLabels: (data) ->
     xScale = @xScale
     labelY = @height - @margin - 3
-    @chart.selectAll('.box-label')
-        .data(data)
-      .enter().append("g")
-        .attr("class", "box-label")
-        .attr("transform", (d) -> 
-          "translate(#{xScale(d.start_x) + 11},#{labelY})")
-        .append("text")
-          .text((d) -> d.title if d.indexWithinGroup == 0)
-          .attr("transform", "rotate(270)")
+    @rectG.append("g")
+      .attr("class", "box-label")
+      .attr("transform", (d) -> 
+        "translate(#{xScale(d.start_x) + 11},#{labelY})")
+      .append("text")
+        .text((d) -> d.title if d.indexWithinGroup == 0)
+        .attr("transform", "rotate(270)")
 
 window.Chart = Chart
