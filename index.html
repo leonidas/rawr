@@ -55,12 +55,13 @@ Transparent,fill:red;stroke:red;fill-opacity:0.2;</textarea>
 
   <div id="chart"></div>
   <script>
+    var chart = new window.Chart(d3.select('div#chart'), width, height, margin);  
     $("form#rawr").submit(function() {
       var csv_styles = $("#styles").val();
       var csv_data = $("#data").val();
       var csv_data2 = $("#data2").val();
 
-      var chart, styles, data, height, margin, width;
+      var styles, data, height, margin, width;
       styles = _(d3.csv.parse(csv_styles)).reduce((function(result, pair) {
         result[pair.title] = pair.style;
         return result;
@@ -85,8 +86,6 @@ Transparent,fill:red;stroke:red;fill-opacity:0.2;</textarea>
       width = 800;
       height = 500;
 
-      $('div#chart').empty();
-      chart = new window.Chart(d3.select('div#chart'), width, height, margin);
       chart.draw(data, styles);
       chart.drawDataRectangles(data2, styles, "layer2");
       return false;

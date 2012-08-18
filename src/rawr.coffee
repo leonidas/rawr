@@ -66,7 +66,7 @@ class Chart
     console.log(data)
 
     @rectG = @chart.selectAll('.' + className)
-        .data(data)
+      .data(data, (d) -> "#{d.title}-#{d.indexWithinGroup}")
       .enter().append("g")
 
     @rectG.append("rect")
