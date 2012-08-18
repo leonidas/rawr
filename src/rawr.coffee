@@ -20,25 +20,42 @@ class Chart
     @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
 
   drawXLabels: () ->
-    @chart.selectAll(".x-label")
+    @xLabels = @chart
+      .selectAll(".x-label")
       .data(@xScale.ticks(10))
-    .enter().append("text")
+
+    @xLabels
+      .enter()
+      .append("text")
       .attr("class", "x-label")
+      .attr("text-anchor", "middle")
+
+    @xLabels
       .attr("x", @xScale)
       .attr("y", @height - @margin + 15)
-      .attr("text-anchor", "middle")
       .text(String)
 
+    @xLabels.exit().remove()
+
+
   drawYLabels: () ->
-    @chart.selectAll(".y-label")
-        .data(@yScale.ticks(10))
-      .enter().append("text")
-        .attr("class", "y-label")
-        .attr("x", @margin - 5)
-        .attr("y", @yScale)
-        .attr("text-anchor", "end")
-        .attr("alignment-baseline", "middle")
-        .text(String)
+    @yLabels = @chart
+      .selectAll(".y-label")
+      .data(@yScale.ticks(10))
+
+    @yLabels
+      .enter()
+      .append("text")
+      .attr("class", "y-label")
+      .attr("alignment-baseline", "middle")
+      .attr("text-anchor", "end")
+
+    @yLabels
+      .attr("x", @margin - 5)
+      .attr("y", @yScale)
+      .text(String)
+
+    @yLabels.exit().remove()
 
   drawDataRectangles: (data, styles, className = 'layer1') ->
     addIndexWithinGroup = (data) ->
