@@ -12,7 +12,6 @@ class Chart
     @drawXLabels()
     @drawYLabels()
     @drawDataRectangles(data, styles)
-    @drawRectangleLabels(data)
 
   calculateScale: (data) ->
     totalX = d3.sum(data, (d) -> d.width)
@@ -62,30 +61,47 @@ class Chart
 
     xScale = @xScale
     yScale = @yScale
+    labelY = @height - @margin - 3
 
     console.log(data)
 
-    @rectG = @chart.selectAll('.' + className)
+    @rectG = @chart
+      .selectAll('.' + className)
       .data(data, (d) -> "#{d.title}-#{d.indexWithinGroup}")
-      .enter().append("g")
 
-    @rectG.append("rect")
-      .attr("class", className)
-      .attr("x", (d) -> xScale(d.start_x))
-      .attr("width", (d) -> xScale(d.start_x + d.width) - xScale(d.start_x))
-      .attr("y", (d) -> yScale(d.height))
-      .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
-      .attr("style", (d) -> styles[d.title])
+    newRectG = @rectG
+      .enter()
+      .append("g")
+        .attr("class", className)
 
-  drawRectangleLabels: (data) ->
-    xScale = @xScale
-    labelY = @height - @margin - 3
-    @rectG.append("g")
-      .attr("class", "box-label")
-      .attr("transform", (d) -> 
-        "translate(#{xScale(d.start_x) + 11},#{labelY})")
+    newRectG
+      .append("rect")
+
+    newRectG
+      .append("g")
+        .attr("class", "box-label")
       .append("text")
-        .text((d) -> d.title if d.indexWithinGroup == 0)
         .attr("transform", "rotate(270)")
+
+    @rectG
+      .select("rect")
+        .attr("x", (d) -> xScale(d.start_x))
+        .attr("width", (d) -> xScale(d.start_x + d.width) - xScale(d.start_x))
+        .attr("y", (d) -> yScale(d.height))
+        .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
+        .attr("style", (d) -> styles[d.title])
+
+    @rectG
+      .select("g")
+        .attr("transform", (d) -> 
+          "translate(#{xScale(d.start_x) + 11},#{labelY})")
+      .select("text")
+        .text((d) -> d.title if d.indexWithinGroup == 0)
+
+    @rectG
+      .exit()
+      .remove();
+
+
 
 window.Chart = Chart
