@@ -8,28 +8,18 @@ class Chart
       .style("font-size", "11")
 
   draw: (data, styles) ->
-    addDisplayText = (data) ->
-      previous_t = ""
-      _(data).each((d) -> 
-        if previous_t != d.title
-          d.display_text = d.title
-          previous_t = d.title
-        else
-          d.display_text = ""
-      )
-
-    addDisplayText(data)
-
-    totalX = d3.sum(data, (d) -> d.width)
-    maxY   = d3.max(data, (d) -> d.height)
-
-    @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
-    @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
-
+    @calculateScale(data)
     @drawXLabels()
     @drawYLabels()
     @drawDataRectangles(data, styles)
     @drawRectangleLabels(data)
+
+  calculateScale: (data) ->
+    totalX = d3.sum(data, (d) -> d.width)
+    maxY   = d3.max(data, (d) -> d.height)
+    @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
+    @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
+
 
   drawXLabels: () ->
     @chart.selectAll(".x-label")
@@ -53,6 +43,18 @@ class Chart
         .text(String)
 
   drawDataRectangles: (data, styles, className = 'layer1') ->
+    addDisplayText = (data) ->
+      previous_t = ""
+      _(data).each((d) -> 
+        if previous_t != d.title
+          d.display_text = d.title
+          previous_t = d.title
+        else
+          d.display_text = ""
+      )
+
+    addDisplayText(data)
+
     addStartingX = (data) ->
       accumulator = 0
       _(data).map((d) ->
@@ -60,7 +62,6 @@ class Chart
         accumulator += d.width
       )    
     addStartingX(data)
-
 
     xScale = @xScale
     yScale = @yScale
