@@ -20,7 +20,6 @@ class Chart
     @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
     @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
 
-
   drawXLabels: () ->
     @chart.selectAll(".x-label")
       .data(@xScale.ticks(10))
@@ -43,17 +42,15 @@ class Chart
         .text(String)
 
   drawDataRectangles: (data, styles, className = 'layer1') ->
-    addDisplayText = (data) ->
-      previous_t = ""
-      _(data).each((d) -> 
-        if previous_t != d.title
-          d.display_text = d.title
-          previous_t = d.title
-        else
-          d.display_text = ""
-      )
+    addIndexWithinGroup = (data) ->
+      groupCounts = {}
 
-    addDisplayText(data)
+      _(data).each((d) -> 
+        groupCounts[d.title] ?= 0
+        d.indexWithinGroup = groupCounts[d.title]
+        groupCounts[d.title] += 1
+      )
+    addIndexWithinGroup(data)
 
     addStartingX = (data) ->
       accumulator = 0
@@ -88,7 +85,7 @@ class Chart
         .attr("transform", (d) -> 
           "translate(#{xScale(d.start_x) + 11},#{labelY})")
         .append("text")
-          .text((d) -> d.display_text)
+          .text((d) -> d.title if d.indexWithinGroup == 0)
           .attr("transform", "rotate(270)")
 
 window.Chart = Chart
