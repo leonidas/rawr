@@ -86,6 +86,16 @@ class Chart
       .selectAll('.' + className)
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
+    @rectG
+      .select("rect")
+        .attr("style", (d) -> styles[d.title])
+      .transition()
+      .duration(500)
+        .attr("x", (d) -> xScale(d.__start_x__))
+        .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
+        .attr("y", (d) -> yScale(d.height))
+        .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
+
     newRectG = @rectG
       .enter()
       .append("g")
@@ -94,7 +104,8 @@ class Chart
     newRectG
       .append("rect")
         .attr("x", (d) -> xScale(d.__start_x__))
-        .attr("y", (d) -> yScale(d.height))
+        .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
+        .attr("y", (d) -> yScale(0))
 
     newRectG
       .append("g")
@@ -106,7 +117,8 @@ class Chart
       .select("rect")
         .attr("style", (d) -> styles[d.title])
       .transition()
-      .duration(1000)
+      .delay(500)
+      .duration(500)
         .attr("x", (d) -> xScale(d.__start_x__))
         .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
         .attr("y", (d) -> yScale(d.height))
