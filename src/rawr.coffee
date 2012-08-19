@@ -63,7 +63,7 @@ class Chart
 
       _(data).each((d) -> 
         groupCounts[d.title] ?= 0
-        d.indexWithinGroup = groupCounts[d.title]
+        d.__indexWithinGroup__ = groupCounts[d.title]
         groupCounts[d.title] += 1
       )
     addIndexWithinGroup(data)
@@ -71,7 +71,7 @@ class Chart
     addStartingX = (data) ->
       accumulator = 0
       _(data).map((d) ->
-        d.start_x = accumulator
+        d.__start_x__ = accumulator
         accumulator += d.width
       )    
     addStartingX(data)
@@ -84,7 +84,7 @@ class Chart
 
     @rectG = @chart
       .selectAll('.' + className)
-      .data(data, (d) -> "#{d.title}-#{d.indexWithinGroup}")
+      .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
     newRectG = @rectG
       .enter()
@@ -102,8 +102,8 @@ class Chart
 
     @rectG
       .select("rect")
-        .attr("x", (d) -> xScale(d.start_x))
-        .attr("width", (d) -> xScale(d.start_x + d.width) - xScale(d.start_x))
+        .attr("x", (d) -> xScale(d.__start_x__))
+        .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
         .attr("style", (d) -> styles[d.title])
@@ -111,9 +111,9 @@ class Chart
     @rectG
       .select("g")
         .attr("transform", (d) -> 
-          "translate(#{xScale(d.start_x) + 11},#{labelY})")
+          "translate(#{xScale(d.__start_x__) + 11},#{labelY})")
       .select("text")
-        .text((d) -> d.title if d.indexWithinGroup == 0)
+        .text((d) -> d.title if d.__indexWithinGroup__ == 0)
 
     @rectG
       .exit()
