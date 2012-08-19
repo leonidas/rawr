@@ -8,18 +8,12 @@ class Chart
       .style("position", "relative")
       .style("width", @width)
       .style("height", @height)
-    @axesCanvas = @parent.append('svg:svg')
-      .classed("axesCanvas", true)
-      .style("position", "absolute")
-      .style("left", 0)
-      .style("right", 0)
-      .style("width", @width)
-      .style("height", @height)
-    @chartCanvases = {}
+    @axesCanvas = @getLayerCanvas("axes")
 
-  getChartCanvas: (layerName) ->
-    @chartCanvases[layerName] ?= @parent.append('svg:svg')
-      .classed("chartCanvas", true)
+  getLayerCanvas: (layerName) ->
+    @canvases ?= {}
+    @canvases[layerName] ?= @parent.append('svg:svg')
+      .classed("#{layerName}Layer", true)
       .style("position", "absolute")
       .style("left", 0)
       .style("right", 0)
@@ -113,7 +107,7 @@ class Chart
 
     console.log(data)
 
-    chartCanvas = @getChartCanvas(layerName)
+    chartCanvas = @getLayerCanvas(layerName)
 
     xScale = @xScale
     yScale = @yScale
