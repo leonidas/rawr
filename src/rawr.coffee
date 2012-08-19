@@ -87,7 +87,7 @@ class Chart
     addStartingX = (data) ->
       accumulator = 0
       _(data).map((d) ->
-        d.__start_x__ = accumulator
+        d.__startX__ = accumulator
         accumulator += d.width
       )    
     addStartingX(data)
@@ -107,8 +107,8 @@ class Chart
         .attr("style", (d) -> styles[d.title])
       .transition()
       .duration(500)
-        .attr("x", (d) -> xScale(d.__start_x__))
-        .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
+        .attr("x", (d) -> xScale(d.__startX__))
+        .attr("width", (d) -> xScale(d.__startX__ + d.width) - xScale(d.__startX__))
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
 
@@ -119,8 +119,8 @@ class Chart
 
     newRectG
       .append("rect")
-        .attr("x", (d) -> xScale(d.__start_x__))
-        .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
+        .attr("x", (d) -> xScale(d.__startX__))
+        .attr("width", (d) -> xScale(d.__startX__ + d.width) - xScale(d.__startX__))
         .attr("y", (d) -> yScale(0))
 
     newRectG
@@ -135,15 +135,15 @@ class Chart
       .transition()
       .delay(500)
       .duration(500)
-        .attr("x", (d) -> xScale(d.__start_x__))
-        .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
+        .attr("x", (d) -> xScale(d.__startX__))
+        .attr("width", (d) -> xScale(d.__startX__ + d.width) - xScale(d.__startX__))
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
 
     @rectG
       .select("g")
         .attr("transform", (d) -> 
-          "translate(#{xScale(d.__start_x__) + 11},#{labelY})")
+          "translate(#{xScale(d.__startX__) + 11},#{labelY})")
       .select("text")
         .text((d) -> d.title if d.__indexWithinGroup__ == 0)
 
