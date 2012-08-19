@@ -15,13 +15,18 @@ class Chart
       .style("right", 0)
       .style("width", @width)
       .style("height", @height)
-    @chartCanvas = @parent.append('svg:svg')
+    @chartCanvases = {}
+
+  getChartCanvas: (className) ->
+    @chartCanvases[className] ?= @parent.append('svg:svg')
       .classed("chartCanvas", true)
       .style("position", "absolute")
       .style("left", 0)
       .style("right", 0)
       .style("width", @width)
       .style("height", @height)
+    console.log(@chartCanvases[className])
+    @chartCanvases[className]
 
   draw: (data, styles) ->
     @calculateScale(data)
@@ -108,13 +113,15 @@ class Chart
       )    
     addStartingX(data)
 
+    chartCanvas = @getChartCanvas(className)
+
     xScale = @xScale
     yScale = @yScale
     labelY = @height - @margin - 3
 
     console.log(data)
 
-    rectG = @chartCanvas
+    rectG = chartCanvas
       .selectAll('.' + className)
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 

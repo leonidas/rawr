@@ -1,0 +1,22 @@
+<!DOCTYPE html5>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Transparent SVG test</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+ </head>
+<body>
+  <div style="position: relative; margin:20px; border: 1px solid red; width:200px; height:200px;">
+    <svg id="outside" style="position: absolute; left:0px; top:0px;" width="100" height="100">
+      <rect id="first" x="0" y="0" width="20" height="20" style="fill:green" />​
+      <rect x="25" y="25" width="20" height="20" style="fill:red" />​
+    </svg>
+    <svg id="inside" style="z-index: 10; position: absolute; left:20px; top:20px" width="80" height="80">
+      <rect width="20" height="20" style="fill:blue;opacity:0.5;" />​
+    </svg>
+  </div>
+  <script>
+    $(document).ready(function() {
+    });
+  </script>
+</body>
