@@ -102,6 +102,7 @@ class Chart
       .selectAll('.' + className)
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
+    # Transition existing rectangles
     rectG
       .select("rect")
         .attr("style", (d) -> styles[d.title])
@@ -112,25 +113,16 @@ class Chart
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
 
+    # Create new rectangles and transition them
     newRectG = rectG.enter()
       .append("g")
         .attr("class", className)
-
     newRectG
       .append("rect")
+        .attr("style", (d) -> styles[d.title])
         .attr("x", (d) -> xScale(d.__startX__))
         .attr("width", (d) -> xScale(d.__startX__ + d.width) - xScale(d.__startX__))
         .attr("y", (d) -> yScale(0))
-
-    newRectG
-      .append("g")
-        .attr("class", "box-label")
-      .append("text")
-        .attr("transform", "rotate(270)")
-
-    rectG
-      .select("rect")
-        .attr("style", (d) -> styles[d.title])
       .transition()
       .delay(500)
       .duration(500)
@@ -139,13 +131,27 @@ class Chart
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
 
+    # Create new labels
+    newRectG
+      .append("g")
+        .attr("class", "box-label")
+      .append("text")
+        .attr("transform", "rotate(270)")
+
+    # Update all labels
     rectG
       .select("g")
         .attr("transform", (d) -> 
           "translate(#{xScale(d.__startX__) + 11},#{labelY})")
       .select("text")
-        .text((d) -> d.title if d.__indexWithinGroup__ == 0)
+        .text((d) -> 
+          if d.__indexWithinGroup__ == 0
+            d.title
+          else
+            ""
+        )
 
+    # Remove exiting rectangels and labels
     rectG.exit()
       .remove();
 
