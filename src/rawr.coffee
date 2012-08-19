@@ -25,8 +25,6 @@ class Chart
       .style("right", 0)
       .style("width", @width)
       .style("height", @height)
-    console.log(@chartCanvases[className])
-    @chartCanvases[className]
 
   draw: (data, styles) ->
     @calculateScale(data)
