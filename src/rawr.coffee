@@ -57,11 +57,13 @@ class Chart
       .style("left", (i) => @oldXScale(i) - labelWidth / 2)
       .style("width", labelWidth)
       .style("top", @height - @margin + 5)
+      .style("opacity", "0")
       .text(String)
 
     @xLabels
       .transition()
       .duration(500)
+      .style("opacity", "1")
       .style("left", (i) => @xScale(i) - labelWidth / 2)
 
     @xLabels.exit()
@@ -88,11 +90,13 @@ class Chart
       .style("width", @margin - 5)
       .style("top", (i) => @oldYScale(i) - labelHeight / 2)
       .style("height", labelHeight)
+      .style("opacity", "0")
       .text(String)
 
     @yLabels
       .transition()
       .duration(500)
+      .style("opacity", "1")
       .style("top", (i) => @yScale(i) - labelHeight / 2)
 
     @yLabels.exit()
