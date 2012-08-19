@@ -16,27 +16,35 @@ class Chart
   calculateScale: (data) ->
     totalX = d3.sum(data, (d) -> d.width)
     maxY   = d3.max(data, (d) -> d.height)
-    @oldYScale = @yScale ? 0
+    @oldXScale = @xScale ? @margin
+    @oldYScale = @yScale ? @height - @margin
     @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
     @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
 
   drawXLabels: () ->
     @xLabels = @chart
       .selectAll(".x-label")
-      .data(@xScale.ticks(10))
+      .data(@xScale.ticks(10), String)
 
-    @xLabels
-      .enter()
+    @xLabels.enter()
       .append("text")
       .attr("class", "x-label")
       .attr("text-anchor", "middle")
-
-    @xLabels
-      .attr("x", @xScale)
+      .attr("x", @oldXScale)
       .attr("y", @height - @margin + 15)
       .text(String)
 
-    @xLabels.exit().remove()
+    @xLabels
+      .transition()
+      .duration(500)
+      .attr("x", @xScale)
+
+    @xLabels.exit()
+      .transition()
+      .duration(500)
+      .attr("x", @xScale)
+      .style("opacity", "0")
+      .remove()
 
 
   drawYLabels: () ->
@@ -62,7 +70,6 @@ class Chart
       .transition()
       .duration(500)
       .attr("y", @yScale)
-      .text(String)
       .style("opacity", "0")
       .remove()
 
