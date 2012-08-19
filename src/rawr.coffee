@@ -1,11 +1,27 @@
 
 class Chart
   constructor: (where, @width, @height, @margin) ->
-    @chart = where.append('svg:svg')
-      .attr('width', @width)
-      .attr('height', @height)
+    @parent = where.append('div')
+      .classed("backgrondCanvas", true)
       .style("font-family", "Helvetica")
       .style("font-size", "11")
+      .style("position", "relative")
+      .style("width", @width)
+      .style("height", @height)
+    @axesCanvas = @parent.append('svg:svg')
+      .classed("axesCanvas", true)
+      .style("position", "absolute")
+      .style("left", 0)
+      .style("right", 0)
+      .style("width", @width)
+      .style("height", @height)
+    @chartCanvas = @parent.append('svg:svg')
+      .classed("chartCanvas", true)
+      .style("position", "absolute")
+      .style("left", 0)
+      .style("right", 0)
+      .style("width", @width)
+      .style("height", @height)
 
   draw: (data, styles) ->
     @calculateScale(data)
@@ -22,7 +38,7 @@ class Chart
     @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
 
   drawXLabels: () ->
-    @xLabels = @chart
+    @xLabels = @axesCanvas
       .selectAll(".x-label")
       .data(@xScale.ticks(10), String)
 
@@ -48,7 +64,7 @@ class Chart
 
 
   drawYLabels: () ->
-    @yLabels = @chart
+    @yLabels = @axesCanvas
       .selectAll(".y-label")
       .data(@yScale.ticks(10), String)
 
@@ -98,7 +114,7 @@ class Chart
 
     console.log(data)
 
-    rectG = @chart
+    rectG = @chartCanvas
       .selectAll('.' + className)
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
