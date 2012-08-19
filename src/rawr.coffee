@@ -17,8 +17,8 @@ class Chart
       .style("height", @height)
     @chartCanvases = {}
 
-  getChartCanvas: (className) ->
-    @chartCanvases[className] ?= @parent.append('svg:svg')
+  getChartCanvas: (layerName) ->
+    @chartCanvases[layerName] ?= @parent.append('svg:svg')
       .classed("chartCanvas", true)
       .style("position", "absolute")
       .style("left", 0)
@@ -92,7 +92,7 @@ class Chart
       .style("opacity", "0")
       .remove()
 
-  drawDataRectangles: (data, styles, className = 'layer1') ->
+  drawDataRectangles: (data, styles, layerName = 'layer1') ->
     addIndexWithinGroup = (data) ->
       groupCounts = {}
 
@@ -111,16 +111,17 @@ class Chart
       )    
     addStartingX(data)
 
-    chartCanvas = @getChartCanvas(className)
+    console.log(data)
+
+    chartCanvas = @getChartCanvas(layerName)
 
     xScale = @xScale
     yScale = @yScale
     labelY = @height - @margin - 3
 
-    console.log(data)
 
     rectG = chartCanvas
-      .selectAll('.' + className)
+      .selectAll('.' + layerName)
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
     # Transition existing rectangles
@@ -137,7 +138,7 @@ class Chart
     # Create new rectangles and transition them
     newRectG = rectG.enter()
       .append("g")
-        .attr("class", className)
+        .attr("class", layerName)
     newRectG
       .append("rect")
         .attr("style", (d) -> styles[d.title])
