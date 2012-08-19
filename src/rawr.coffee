@@ -121,7 +121,7 @@ class Chart
 
 
     rectG = chartCanvas
-      .selectAll('.' + layerName)
+      .selectAll('.bar')
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
     # Transition existing rectangles
@@ -138,7 +138,7 @@ class Chart
     # Create new rectangles and transition them
     newRectG = rectG.enter()
       .append("g")
-        .attr("class", layerName)
+        .attr("class", 'bar')
     newRectG
       .append("rect")
         .attr("style", (d) -> styles[d.title])
