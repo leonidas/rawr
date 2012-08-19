@@ -24,11 +24,12 @@ class Chart
     @calculateScale(data)
     @drawXLabels()
     @drawYLabels()
-    @drawDataRectangles(data, styles)
+    @drawDataRectangles(data[0], styles, 0)
+    @drawDataRectangles(data[1], styles, 1)
 
   calculateScale: (data) ->
-    totalX = d3.sum(data, (d) -> d.width)
-    maxY   = d3.max(data, (d) -> d.height)
+    totalX = d3.max(data, (layer) -> d3.sum(layer, (item) -> item.width))
+    maxY   = d3.max(_.flatten(data), (item) -> item.height)
     @oldXScale = @xScale ? @margin
     @oldYScale = @yScale ? @height - @margin
     @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
@@ -86,7 +87,7 @@ class Chart
       .style("opacity", "0")
       .remove()
 
-  drawDataRectangles: (data, styles, layerName = 'layer1') ->
+  drawDataRectangles: (data, styles, layerName) ->
     addIndexWithinGroup = (data) ->
       groupCounts = {}
 

@@ -85,8 +85,7 @@ Transparent,fill:red;stroke:red;fill-opacity:0.2;</textarea>
         };
       });
 
-      chart.draw(data, styles);
-      chart.drawDataRectangles(data2, styles, "layer2");
+      chart.draw([data, data2], styles);
       return false;
     });
   </script>
