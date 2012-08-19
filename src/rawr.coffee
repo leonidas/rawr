@@ -98,11 +98,11 @@ class Chart
 
     console.log(data)
 
-    @rectG = @chart
+    rectG = @chart
       .selectAll('.' + className)
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
-    @rectG
+    rectG
       .select("rect")
         .attr("style", (d) -> styles[d.title])
       .transition()
@@ -112,8 +112,7 @@ class Chart
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
 
-    newRectG = @rectG
-      .enter()
+    newRectG = rectG.enter()
       .append("g")
         .attr("class", className)
 
@@ -129,7 +128,7 @@ class Chart
       .append("text")
         .attr("transform", "rotate(270)")
 
-    @rectG
+    rectG
       .select("rect")
         .attr("style", (d) -> styles[d.title])
       .transition()
@@ -140,15 +139,14 @@ class Chart
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
 
-    @rectG
+    rectG
       .select("g")
         .attr("transform", (d) -> 
           "translate(#{xScale(d.__startX__) + 11},#{labelY})")
       .select("text")
         .text((d) -> d.title if d.__indexWithinGroup__ == 0)
 
-    @rectG
-      .exit()
+    rectG.exit()
       .remove();
 
 
