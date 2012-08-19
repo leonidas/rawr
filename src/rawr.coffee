@@ -43,32 +43,38 @@ class Chart
     @yScale = newYScale
 
   drawXLabels: () ->
-    @xLabels = @axesCanvas
+    labelWidth = 30
+
+    @xLabels = @parent
       .selectAll(".x-label")
       .data(@xScale.ticks(10), String)
 
     @xLabels.enter()
-      .append("text")
+      .append("div")
       .attr("class", "x-label")
-      .attr("text-anchor", "middle")
-      .attr("x", @oldXScale)
-      .attr("y", @height - @margin + 15)
+      .style("position", "absolute")        
+      .style("text-align", "center")
+      .style("left", (i) => @oldXScale(i) - labelWidth / 2)
+      .style("width", labelWidth)
+      .style("top", @height - @margin + 5)
       .text(String)
 
     @xLabels
       .transition()
       .duration(500)
-      .attr("x", @xScale)
+      .style("left", (i) => @xScale(i) - labelWidth / 2)
 
     @xLabels.exit()
       .transition()
       .duration(500)
-      .attr("x", @xScale)
+      .style("left", (i) => @xScale(i) - labelWidth / 2)
       .style("opacity", "0")
       .remove()
 
 
   drawYLabels: () ->
+    labelHeight = 12
+
     @yLabels = @parent
       .selectAll(".y-label")
       .data(@yScale.ticks(10), String)
@@ -80,18 +86,19 @@ class Chart
       .style("text-align", "right")
       .style("left", 0)
       .style("width", @margin - 5)
-      .style("top", (i) => @oldYScale(i) - 5)
+      .style("top", (i) => @oldYScale(i) - labelHeight / 2)
+      .style("height", labelHeight)
       .text(String)
 
     @yLabels
       .transition()
       .duration(500)
-      .style("top", (i) => @yScale(i) - 5)
+      .style("top", (i) => @yScale(i) - labelHeight / 2)
 
     @yLabels.exit()
       .transition()
       .duration(500)
-      .style("top", (i) => @yScale(i) - 5)
+      .style("top", (i) => @yScale(i) - labelHeight / 2)
       .style("opacity", "0")
       .remove()
 
