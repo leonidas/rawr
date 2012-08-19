@@ -2,7 +2,7 @@
 class Chart
   constructor: (where, @width, @height, @margin) ->
     @parent = where.append('div')
-      .classed("backgrondCanvas", true)
+      .classed("backgroundCanvas", true)
       .style("font-family", "Helvetica")
       .style("font-size", "11")
       .style("position", "relative")
