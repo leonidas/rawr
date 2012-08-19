@@ -93,6 +93,8 @@ class Chart
 
     newRectG
       .append("rect")
+        .attr("x", (d) -> xScale(d.__start_x__))
+        .attr("y", (d) -> yScale(d.height))
 
     newRectG
       .append("g")
@@ -102,11 +104,13 @@ class Chart
 
     @rectG
       .select("rect")
+        .attr("style", (d) -> styles[d.title])
+      .transition()
+      .duration(1000)
         .attr("x", (d) -> xScale(d.__start_x__))
         .attr("width", (d) -> xScale(d.__start_x__ + d.width) - xScale(d.__start_x__))
         .attr("y", (d) -> yScale(d.height))
         .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
-        .attr("style", (d) -> styles[d.title])
 
     @rectG
       .select("g")
