@@ -31,10 +31,16 @@ class Chart
   calculateScale: (data) ->
     totalX = d3.max(data, (layer) -> d3.sum(layer, (item) -> item.width))
     maxY   = d3.max(_.flatten(data), (item) -> item.height)
-    @oldXScale = @xScale ? @margin
-    @oldYScale = @yScale ? @height - @margin
-    @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
-    @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
+    newXScale = d3.scale.linear()
+      .domain([0, totalX])
+      .range [@margin, @width - @margin]
+    newYScale = d3.scale.linear()
+      .domain([0, maxY])
+      .range [@height - @margin, @margin]
+    @oldXScale = @xScale ? newXScale
+    @oldYScale = @yScale ? newYScale
+    @xScale = newXScale
+    @yScale = newYScale
 
   drawXLabels: () ->
     @xLabels = @axesCanvas
@@ -63,28 +69,29 @@ class Chart
 
 
   drawYLabels: () ->
-    @yLabels = @axesCanvas
+    @yLabels = @parent
       .selectAll(".y-label")
       .data(@yScale.ticks(10), String)
 
     @yLabels.enter()
-      .append("text")
+      .append("div")
       .attr("class", "y-label")
-      .attr("alignment-baseline", "middle")
-      .attr("text-anchor", "end")
-      .attr("x", @margin - 5)
-      .attr("y", @oldYScale)      
+      .style("position", "absolute")
+      .style("text-align", "right")
+      .style("left", 0)
+      .style("width", @margin - 5)
+      .style("top", (i) => @oldYScale(i) - 5)
       .text(String)
 
     @yLabels
       .transition()
       .duration(500)
-      .attr("y", @yScale)
+      .style("top", (i) => @yScale(i) - 5)
 
     @yLabels.exit()
       .transition()
       .duration(500)
-      .attr("y", @yScale)
+      .style("top", (i) => @yScale(i) - 5)
       .style("opacity", "0")
       .remove()
 
