@@ -24,8 +24,9 @@ class Chart
     @calculateScale(data)
     @drawXLabels()
     @drawYLabels()
-    @drawDataRectangles(data[0], styles, 0)
-    @drawDataRectangles(data[1], styles, 1)
+    _.each(data, 
+      (layer, index) => @updateDataLayer(layer, styles, index)
+    )
 
   calculateScale: (data) ->
     totalX = d3.max(data, (layer) -> d3.sum(layer, (item) -> item.width))
@@ -87,7 +88,7 @@ class Chart
       .style("opacity", "0")
       .remove()
 
-  drawDataRectangles: (data, styles, layerName) ->
+  updateDataLayer: (data, styles, layerName) ->
     addIndexWithinGroup = (data) ->
       groupCounts = {}
 

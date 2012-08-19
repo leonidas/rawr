@@ -55,38 +55,40 @@ Transparent,fill:red;stroke:red;fill-opacity:0.2;</textarea>
 
   <div id="chart"></div>
   <script>
-    var margin = 25;
-    var width = 800;
-    var height = 500;
-    var chart = new window.Chart(d3.select('div#chart'), width, height, margin);
+    $(document).ready(function() {
+      var margin = 25;
+      var width = 800;
+      var height = 500;
+      var chart = new window.Chart(d3.select('div#chart'), width, height, margin);
 
-    $("form#rawr").submit(function() {
-      var csv_styles = $("#styles").val();
-      var csv_data = $("#data").val();
-      var csv_data2 = $("#data2").val();
+      $("form#rawr").submit(function() {
+        var csv_styles = $("#styles").val();
+        var csv_data = $("#data").val();
+        var csv_data2 = $("#data2").val();
 
-      var styles = _(d3.csv.parse(csv_styles)).reduce((function(result, pair) {
-        result[pair.title] = pair.style;
-        return result;
-      }), {});
-      var data = d3.csv.parse(csv_data).map(function(d) {
-        return {
-          title: d.title,
-          width: parseFloat(d.width),
-          height: parseFloat(d.height)
-        };
+        var styles = _(d3.csv.parse(csv_styles)).reduce((function(result, pair) {
+          result[pair.title] = pair.style;
+          return result;
+        }), {});
+        var data = d3.csv.parse(csv_data).map(function(d) {
+          return {
+            title: d.title,
+            width: parseFloat(d.width),
+            height: parseFloat(d.height)
+          };
+        });
+
+        var data2 = d3.csv.parse(csv_data2).map(function(d) {
+          return {
+            title: d.title,
+            width: parseFloat(d.width),
+            height: parseFloat(d.height)
+          };
+        });
+
+        chart.draw([data, data2], styles);
+        return false;
       });
-
-      var data2 = d3.csv.parse(csv_data2).map(function(d) {
-        return {
-          title: d.title,
-          width: parseFloat(d.width),
-          height: parseFloat(d.height)
-        };
-      });
-
-      chart.draw([data, data2], styles);
-      return false;
     });
   </script>
 </body>
