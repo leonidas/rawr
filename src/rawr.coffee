@@ -16,6 +16,7 @@ class Chart
   calculateScale: (data) ->
     totalX = d3.sum(data, (d) -> d.width)
     maxY   = d3.max(data, (d) -> d.height)
+    @oldYScale = @yScale ? 0
     @xScale = d3.scale.linear().domain([0, totalX]).range [@margin, @width - @margin]
     @yScale = d3.scale.linear().domain([0, maxY]).range [@height - @margin, @margin]
 
@@ -41,21 +42,29 @@ class Chart
   drawYLabels: () ->
     @yLabels = @chart
       .selectAll(".y-label")
-      .data(@yScale.ticks(10))
+      .data(@yScale.ticks(10), String)
 
-    @yLabels
-      .enter()
+    @yLabels.enter()
       .append("text")
       .attr("class", "y-label")
       .attr("alignment-baseline", "middle")
       .attr("text-anchor", "end")
-
-    @yLabels
       .attr("x", @margin - 5)
-      .attr("y", @yScale)
+      .attr("y", @oldYScale)      
       .text(String)
 
-    @yLabels.exit().remove()
+    @yLabels
+      .transition()
+      .duration(500)
+      .attr("y", @yScale)
+
+    @yLabels.exit()
+      .transition()
+      .duration(500)
+      .attr("y", @yScale)
+      .text(String)
+      .style("opacity", "0")
+      .remove()
 
   drawDataRectangles: (data, styles, className = 'layer1') ->
     addIndexWithinGroup = (data) ->
