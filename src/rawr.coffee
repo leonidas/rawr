@@ -12,7 +12,7 @@ class Chart
 
   getLayerCanvas: (layerName) ->
     @canvases ?= {}
-    @canvases[layerName] ?= @parent.append('svg:svg')
+    @canvases[layerName] ?= @parent.append('div')
       .classed("#{layerName}Layer", true)
       .style("position", "absolute")
       .style("left", 0)
@@ -45,7 +45,7 @@ class Chart
   drawXLabels: () ->
     labelWidth = 30
 
-    @xLabels = @parent
+    @xLabels = @axesCanvas
       .selectAll(".x-label")
       .data(@xScale.ticks(10), String)
 
@@ -77,7 +77,7 @@ class Chart
   drawYLabels: () ->
     labelHeight = 12
 
-    @yLabels = @parent
+    @yLabels = @axesCanvas
       .selectAll(".y-label")
       .data(@yScale.ticks(10), String)
 
@@ -134,61 +134,60 @@ class Chart
     labelY = @height - @margin - 3
 
 
-    rectG = chartCanvas
-      .selectAll('.bar')
+    rect = chartCanvas
+      .selectAll('.rect')
       .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
 
     # Transition existing rectangles
-    rectG
-      .select("rect")
-        .attr("style", (d) -> styles[d.title])
+    rect
+      .style("position", "absolute")
       .transition()
       .duration(500)
-        .attr("x", (d) -> xScale(d.__startX__))
-        .attr("width", (d) -> xScale(d.__startX__ + d.width) - xScale(d.__startX__))
-        .attr("y", (d) -> yScale(d.height))
-        .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
+        .style("left", (d) -> Math.round(xScale(d.__startX__)))
+        .style("width", (d) -> Math.round(xScale(d.__startX__ + d.width) - xScale(d.__startX__)))
+        .style("top", (d) -> Math.round(yScale(d.height)))
+        .style("bottom", @margin)
 
     # Create new rectangles and transition them
-    newRectG = rectG.enter()
-      .append("g")
-        .attr("class", 'bar')
-    newRectG
-      .append("rect")
+    rect.enter()
+      .append("div")
+        .attr("class", "rect")
         .attr("style", (d) -> styles[d.title])
-        .attr("x", (d) -> xScale(d.__startX__))
-        .attr("width", (d) -> xScale(d.__startX__ + d.width) - xScale(d.__startX__))
-        .attr("y", (d) -> yScale(0))
+        .style("position", "absolute")
+        .style("left", (d) -> Math.round(xScale(d.__startX__)))
+        .style("width", (d) -> Math.round(xScale(d.__startX__ + d.width) - xScale(d.__startX__)))
+        .style("top", @height - @margin)
+        .style("bottom", @margin)
       .transition()
       .delay(500)
       .duration(500)
-        .attr("x", (d) -> xScale(d.__startX__))
-        .attr("width", (d) -> xScale(d.__startX__ + d.width) - xScale(d.__startX__))
-        .attr("y", (d) -> yScale(d.height))
-        .attr("height", ((d) -> if d.height > 0 then yScale(0) - yScale(d.height) else 3))
+        .style("left", (d) -> Math.round(xScale(d.__startX__)))
+        .style("width", (d) -> Math.round(xScale(d.__startX__ + d.width) - xScale(d.__startX__)))
+        .style("top", (d) -> Math.round(yScale(d.height)))
+        .style("bottom", @margin)
 
-    # Create new labels
-    newRectG
-      .append("g")
-        .attr("class", "box-label")
-      .append("text")
-        .attr("transform", "rotate(270)")
+    # # Create new labels
+    # newRectG
+    #   .append("g")
+    #     .attr("class", "box-label")
+    #   .append("text")
+    #     .attr("transform", "rotate(270)")
 
-    # Update all labels
-    rectG
-      .select("g")
-        .attr("transform", (d) -> 
-          "translate(#{xScale(d.__startX__) + 11},#{labelY})")
-      .select("text")
-        .text((d) -> 
-          if d.__indexWithinGroup__ == 0
-            d.title
-          else
-            ""
-        )
+    # # Update all labels
+    # rect
+    #   .select("g")
+    #     .attr("transform", (d) -> 
+    #       "translate(#{xScale(d.__startX__) + 11},#{labelY})")
+    #   .select("text")
+    #     .text((d) -> 
+    #       if d.__indexWithinGroup__ == 0
+    #         d.title
+    #       else
+    #         ""
+    #     )
 
     # Remove exiting rectangels and labels
-    rectG.exit()
+    rect.exit()
       .remove();
 
 
