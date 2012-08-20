@@ -177,6 +177,9 @@ class Chart
 
     # Remove exiting rectangels
     rect.exit()
+      .transition()
+      .duration(250)
+      .style("opacity", 0)
       .remove();
 
 
