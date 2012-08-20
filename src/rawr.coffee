@@ -10,7 +10,7 @@ class Chart
       .style("height", @height)
     @axesCanvas = @getLayerCanvas("axes")
 
-  getLayerCanvas: (layerName) ->
+  getLayerCanvas: (layerName) =>
     @canvases ?= {}
     @canvases[layerName] ?= @parent.append('div')
       .classed("#{layerName}Layer", true)
@@ -20,7 +20,7 @@ class Chart
       .style("width", @width)
       .style("height", @height)
 
-  draw: (data, styles) ->
+  draw: (data, styles) =>
     @calculateScale(data)
     @drawXLabels()
     @drawYLabels()
@@ -28,9 +28,9 @@ class Chart
       (layer, index) => @updateDataLayer(layer, styles, index)
     )
 
-  calculateScale: (data) ->
-    totalX = d3.max(data, (layer) -> d3.sum(layer, (item) -> item.width))
-    maxY   = d3.max(_.flatten(data), (item) -> item.height)
+  calculateScale: (data) =>
+    totalX = d3.max(data, (layer) => d3.sum(layer, (item) => item.width))
+    maxY   = d3.max(_.flatten(data), (item) => item.height)
     newXScale = d3.scale.linear()
       .domain([0, totalX])
       .range [@margin, @width - @margin]
@@ -42,7 +42,7 @@ class Chart
     @xScale = newXScale
     @yScale = newYScale
 
-  drawXLabels: () ->
+  drawXLabels: () =>
     labelWidth = 30
 
     @xLabels = @axesCanvas
@@ -74,7 +74,7 @@ class Chart
       .remove()
 
 
-  drawYLabels: () ->
+  drawYLabels: () =>
     labelHeight = 12
 
     @yLabels = @axesCanvas
@@ -106,20 +106,20 @@ class Chart
       .style("opacity", "0")
       .remove()
 
-  updateDataLayer: (data, styles, layerName) ->
-    addIndexWithinGroup = (data) ->
+  updateDataLayer: (data, styles, layerName) =>
+    addIndexWithinGroup = (data) =>
       groupCounts = {}
 
-      _(data).each((d) -> 
+      _(data).each((d) => 
         groupCounts[d.title] ?= 0
         d.__indexWithinGroup__ = groupCounts[d.title]
         groupCounts[d.title] += 1
       )
     addIndexWithinGroup(data)
 
-    addStartingX = (data) ->
+    addStartingX = (data) =>
       accumulator = 0
-      _(data).map((d) ->
+      _(data).map((d) =>
         d.__startX__ = accumulator
         accumulator += d.width
       )    
@@ -133,60 +133,48 @@ class Chart
     yScale = @yScale
     labelY = @height - @margin - 3
 
-
     rect = chartCanvas
       .selectAll('.rect')
-      .data(data, (d) -> "#{d.title}-#{d.__indexWithinGroup__}")
+      .data(data, (d) => "#{d.title}-#{d.__indexWithinGroup__}")
 
     # Transition existing rectangles
     rect
       .style("position", "absolute")
+      .text((d) => 
+          if d.__indexWithinGroup__ == 0
+            d.title
+          else
+            ""
+        )      
       .transition()
       .duration(500)
-        .style("left", (d) -> Math.round(xScale(d.__startX__)))
-        .style("width", (d) -> Math.round(xScale(d.__startX__ + d.width) - xScale(d.__startX__)))
-        .style("top", (d) -> Math.round(yScale(d.height)))
+        .style("left", (d) => Math.round(xScale(d.__startX__)))
+        .style("right", (d) => Math.round(@width - xScale(d.__startX__ + d.width)))
+        .style("top", (d) => Math.round(yScale(d.height)))
         .style("bottom", @margin)
 
     # Create new rectangles and transition them
     rect.enter()
       .append("div")
         .attr("class", "rect")
-        .attr("style", (d) -> styles[d.title])
+        .attr("style", (d) => styles[d.title])
         .style("position", "absolute")
-        .style("left", (d) -> Math.round(xScale(d.__startX__)))
-        .style("width", (d) -> Math.round(xScale(d.__startX__ + d.width) - xScale(d.__startX__)))
+        .style("left", (d) => Math.round(xScale(d.__startX__)))
+        .style("right", (d) => Math.round(@width - xScale(d.__startX__ + d.width)))
         .style("top", @height - @margin)
         .style("bottom", @margin)
+        .text((d) => 
+            if d.__indexWithinGroup__ == 0
+              d.title
+            else
+              ""
+          )        
       .transition()
       .delay(500)
       .duration(500)
-        .style("left", (d) -> Math.round(xScale(d.__startX__)))
-        .style("width", (d) -> Math.round(xScale(d.__startX__ + d.width) - xScale(d.__startX__)))
-        .style("top", (d) -> Math.round(yScale(d.height)))
-        .style("bottom", @margin)
+        .style("top", (d) => Math.round(yScale(d.height)))
 
-    # # Create new labels
-    # newRectG
-    #   .append("g")
-    #     .attr("class", "box-label")
-    #   .append("text")
-    #     .attr("transform", "rotate(270)")
-
-    # # Update all labels
-    # rect
-    #   .select("g")
-    #     .attr("transform", (d) -> 
-    #       "translate(#{xScale(d.__startX__) + 11},#{labelY})")
-    #   .select("text")
-    #     .text((d) -> 
-    #       if d.__indexWithinGroup__ == 0
-    #         d.title
-    #       else
-    #         ""
-    #     )
-
-    # Remove exiting rectangels and labels
+    # Remove exiting rectangels
     rect.exit()
       .remove();
 
