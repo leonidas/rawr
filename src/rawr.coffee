@@ -106,26 +106,22 @@ class Chart
       .style("opacity", "0")
       .remove()
 
+  addOwnParamsToData: (data) =>
+    groupCounts = {}
+    _(data).each((d) => 
+      groupCounts[d.title] ?= 0
+      d.__indexWithinGroup__ = groupCounts[d.title]
+      groupCounts[d.title] += 1
+    )
+
+    accumulator = 0
+    _(data).map((d) =>
+      d.__startX__ = accumulator
+      accumulator += d.width
+    )
+
   updateDataLayer: (data, styles, layerName) =>
-    addIndexWithinGroup = (data) =>
-      groupCounts = {}
-
-      _(data).each((d) => 
-        groupCounts[d.title] ?= 0
-        d.__indexWithinGroup__ = groupCounts[d.title]
-        groupCounts[d.title] += 1
-      )
-    addIndexWithinGroup(data)
-
-    addStartingX = (data) =>
-      accumulator = 0
-      _(data).map((d) =>
-        d.__startX__ = accumulator
-        accumulator += d.width
-      )    
-    addStartingX(data)
-
-    console.log(data)
+    @addOwnParamsToData(data)
 
     chartCanvas = @getLayerCanvas(layerName)
 
@@ -136,6 +132,9 @@ class Chart
     rect = chartCanvas
       .selectAll('.rect')
       .data(data, (d) => "#{d.title}-#{d.__indexWithinGroup__}")
+
+    # Make rounding of exact halves to the same direction much rarer.
+    epsilon = 0.00000001
 
     # Transition existing rectangles
     rect
@@ -148,8 +147,8 @@ class Chart
         )      
       .transition()
       .duration(500)
-        .style("left", (d) => Math.round(xScale(d.__startX__)))
-        .style("right", (d) => Math.round(@width - xScale(d.__startX__ + d.width)))
+        .style("left", (d) => Math.round(xScale(d.__startX__) + epsilon))
+        .style("right", (d) => Math.round(@width - xScale(d.__startX__ + d.width) - epsilon))
         .style("top", (d) => Math.round(yScale(d.height)))
         .style("bottom", @margin)
 
@@ -159,10 +158,11 @@ class Chart
         .attr("class", "rect")
         .attr("style", (d) => styles[d.title])
         .style("position", "absolute")
-        .style("left", (d) => Math.round(xScale(d.__startX__)))
-        .style("right", (d) => Math.round(@width - xScale(d.__startX__ + d.width)))
+        .style("left", (d) => Math.round(xScale(d.__startX__) + epsilon))
+        .style("right", (d) => Math.round(@width - xScale(d.__startX__ + d.width) - epsilon))
         .style("top", @height - @margin)
         .style("bottom", @margin)
+        .style("color", "rgba(0,0,0,0)")
         .text((d) => 
             if d.__indexWithinGroup__ == 0
               d.title
@@ -172,6 +172,7 @@ class Chart
       .transition()
       .delay(500)
       .duration(500)
+        .style("color", "rgba(0,0,0,1)")
         .style("top", (d) => Math.round(yScale(d.height)))
 
     # Remove exiting rectangels
