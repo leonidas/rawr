@@ -65,16 +65,17 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
       var height = 500;
       var chart = new window.Chart(d3.select('div#chart'), width, height, margin);
 
-      $("form#rawr").submit(function() {
+      var setStyles = function() {
         var csv_styles = $("#styles").val();
-        var csv_data = $("#data").val();
-        var csv_data2 = $("#data2").val();
-
         var styles = _(d3.csv.parse(csv_styles)).reduce((function(result, pair) {
           result[pair.title] = pair.style;
           return result;
         }), {});
+        chart.setStyles(styles);        
+      };
 
+      var setData = function() {
+        var csv_data = $("#data").val();
         var data = d3.csv.parse(csv_data).map(function(d) {
           return {
             page: d.page,
@@ -85,9 +86,12 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
             height: parseFloat(d.height)
           };
         });
-
-        chart.setStyles(styles);
         chart.setData(data);
+      }
+
+      $("form#rawr").submit(function() {
+        setStyles();
+        setData();
         return false;
       });
     });
