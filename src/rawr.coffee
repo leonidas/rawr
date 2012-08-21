@@ -131,7 +131,7 @@ class Chart
 
     rect = chartCanvas
       .selectAll('.rect')
-      .data(data, (d) => "#{d.title}-#{d.__indexWithinGroup__}")
+      .data(data, (d) => "#{d.title}-#{d.subtitle}")
 
     # Make rounding of exact halves to the same direction much rarer.
     epsilon = 0.00000001
