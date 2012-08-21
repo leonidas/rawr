@@ -10,7 +10,9 @@ class Chart
       .style("height", @height)
     @axesCanvas = @getLayerCanvas("axes")
 
-  setData: (data, @styles) =>
+  setStyles: (@styles) =>
+
+  setData: (data) =>
     @data = @hierarchizeData(data)
     @pageNames = _.keys(@data)
     @currentPageNumber = 0
