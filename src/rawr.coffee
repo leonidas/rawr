@@ -20,17 +20,18 @@ class Chart
       .style("width", @width)
       .style("height", @height)
 
-  draw: (data, styles) =>
-    @calculateScale(data)
+  draw: (array_data, styles) =>
+    map_data = {"main": array_data[0], "overlay": array_data[1]}
+    @calculateScale(map_data)
     @drawXLabels()
     @drawYLabels()
-    _.each(data, 
-      (layer, index) => @updateDataLayer(layer, styles, index)
+    _.each(map_data, 
+      (layer, layerName) => @updateDataLayer(layer, styles, layerName)
     )
 
   calculateScale: (data) =>
-    totalX = d3.max(data, (layer) => d3.sum(layer, (item) => item.width))
-    maxY   = d3.max(_.flatten(data), (item) => item.height)
+    totalX = d3.max(_.values(data), (layer) => d3.sum(layer, (item) => item.width))
+    maxY   = d3.max(_.flatten(_.values(data)), (item) => item.height)
     newXScale = d3.scale.linear()
       .domain([0, totalX])
       .range [@margin, @width - @margin]
