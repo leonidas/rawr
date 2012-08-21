@@ -21,6 +21,7 @@ class Chart
       .style("height", @height)
 
   draw: (data, styles) =>
+    data = _.groupBy(data, "series");
     @calculateScale(data)
     @drawXLabels()
     @drawYLabels()

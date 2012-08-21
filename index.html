@@ -74,8 +74,6 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
           };
         });
 
-        data = _.groupBy(data, "series");
-
         chart.draw(data, styles);
         return false;
       });
