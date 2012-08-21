@@ -20,13 +20,13 @@ class Chart
       .style("width", @width)
       .style("height", @height)
 
-  draw: (array_data, styles) =>
-    map_data = {"main": array_data[0], "overlay": array_data[1]}
-    @calculateScale(map_data)
+  draw: (data, styles) =>
+    @calculateScale(data)
     @drawXLabels()
     @drawYLabels()
-    _.each(map_data, 
-      (layer, layerName) => @updateDataLayer(layer, styles, layerName)
+    _.each(data, 
+      (seriesData, seriesName) => 
+        @updateDataLayer(seriesName, seriesData, styles)
     )
 
   calculateScale: (data) =>
@@ -121,7 +121,7 @@ class Chart
       accumulator += d.width
     )
 
-  updateDataLayer: (data, styles, layerName) =>
+  updateDataLayer: (layerName, data, styles) =>
     @addOwnParamsToData(data)
 
     chartCanvas = @getLayerCanvas(layerName)

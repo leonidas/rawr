@@ -16,24 +16,17 @@
           <label>
             Base data<br>
             <textarea rows=20 cols=30 id="data">
-title,subtitle,width,height
-Foo,a,96,50
-Bar,a,51,50
-Bar,b,12.5,73
-Bar,c,156,93
-Bar,d,67.5,63
-Zed,a,32,145
-Baz,a,335,100
-Baz,a,157.50,65</textarea>
-          </label>
-        </td>
-        <td>
-          <label>
-            Overlay data<br>
-            <textarea rows=20 cols=30 id="data2">
-title,subtitle,width,height
-Transparent,a,600,30
-Transparent,b,200,20</textarea>
+series,title,subtitle,width,height
+main,Foo,a,96,50
+main,Bar,a,51,50
+main,Bar,b,12.5,73
+main,Bar,c,156,93
+main,Bar,d,67.5,63
+main,Zed,a,32,145
+main,Baz,a,335,100
+main,Baz,a,157.50,65
+overlay,Transparent,a,600,30
+overlay,Transparent,b,200,20</textarea>
           </label>
         </td>
         <td>
@@ -73,6 +66,7 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
 
         var data = d3.csv.parse(csv_data).map(function(d) {
           return {
+            series: d.series,
             title: d.title,
             subtitle: d.subtitle,
             width: parseFloat(d.width),
@@ -80,16 +74,9 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
           };
         });
 
-        var data2 = d3.csv.parse(csv_data2).map(function(d) {
-          return {
-            title: d.title,
-            subtitle: d.subtitle,            
-            width: parseFloat(d.width),
-            height: parseFloat(d.height)
-          };
-        });
+        data = _.groupBy(data, "series");
 
-        chart.draw([data, data2], styles);
+        chart.draw(data, styles);
         return false;
       });
     });
