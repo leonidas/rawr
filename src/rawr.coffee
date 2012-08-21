@@ -10,21 +10,20 @@ class Chart
       .style("height", @height)
     @axesCanvas = @getLayerCanvas("axes")
 
-  setData: (data, styles) =>
+  setData: (data, @styles) =>
     @data = @hierarchizeData(data)
-    console.log(@data)
     @pageNames = _.keys(@data)
     @currentPageNumber = 0
 
     @calculateScale(@data)
     @drawXLabels()
     @drawYLabels()
-    @drawPage(@pageNames[@currentPageNumber], styles)
+    @drawPage(@pageNames[@currentPageNumber])
 
-  drawPage: (pageName, styles) =>
+  drawPage: (pageName) =>
     _.each(@data[pageName],
       (seriesData, seriesName) => 
-        @updateDataLayer(seriesName, seriesData, styles)
+        @updateDataLayer(seriesName, seriesData)
     )
 
   hierarchizeData: (data) =>
@@ -154,7 +153,7 @@ class Chart
       accumulator += d.width
     )
 
-  updateDataLayer: (layerName, data, styles) =>
+  updateDataLayer: (layerName, data) =>
     @addOwnParamsToData(data)
 
     chartCanvas = @getLayerCanvas(layerName)
@@ -190,7 +189,7 @@ class Chart
     rect.enter()
       .append("div")
         .attr("class", "rect")
-        .attr("style", (d) => styles[d.title])
+        .attr("style", (d) => @styles[d.title])
         .style("position", "absolute")
         .style("left", (d) => Math.round(xScale(d.__startX__) + epsilon))
         .style("right", (d) => Math.round(@width - xScale(d.__startX__ + d.width) - epsilon))
