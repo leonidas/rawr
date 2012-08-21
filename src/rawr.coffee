@@ -10,6 +10,30 @@ class Chart
       .style("height", @height)
     @axesCanvas = @getLayerCanvas("axes")
 
+  setData: (data, styles) =>
+    @data = @hierarchizeData(data)
+    console.log(@data)
+    @pageNames = _.keys(@data)
+    @currentPageNumber = 0
+
+    @calculateScale(@data)
+    @drawXLabels()
+    @drawYLabels()
+    @drawPage(@pageNames[@currentPageNumber], styles)
+
+  drawPage: (pageName, styles) =>
+    _.each(@data[pageName],
+      (seriesData, seriesName) => 
+        @updateDataLayer(seriesName, seriesData, styles)
+    )
+
+  hierarchizeData: (data) =>
+    hierarchicalData = _.groupBy(data, "page")
+    _.each(_.keys(hierarchicalData), (page) =>
+      hierarchicalData[page] = _.groupBy(hierarchicalData[page], "series")
+    )
+    return hierarchicalData
+
   getLayerCanvas: (layerName) =>
     @canvases ?= {}
     @canvases[layerName] ?= @parent.append('div')
@@ -20,21 +44,29 @@ class Chart
       .style("width", @width)
       .style("height", @height)
 
-  draw: (data, styles) =>
-    data = _.groupBy(data, "series");
-    @calculateScale(data)
-    @drawXLabels()
-    @drawYLabels()
-    _.each(data, 
-      (seriesData, seriesName) => 
-        @updateDataLayer(seriesName, seriesData, styles)
-    )
+  getLayerCanvas: (layerName) =>
+    @canvases ?= {}
+    @canvases[layerName] ?= @parent.append('div')
+      .classed("#{layerName}Layer", true)
+      .style("position", "absolute")
+      .style("left", 0)
+      .style("right", 0)
+      .style("width", @width)
+      .style("height", @height)
 
   calculateScale: (data) =>
-    totalX = d3.max(_.values(data), (layer) => d3.sum(layer, (item) => item.width))
-    maxY   = d3.max(_.flatten(_.values(data)), (item) => item.height)
+    maxX = d3.max(_.values(data),
+      (pageData) => d3.max(_.values(pageData),
+        (layerData) => d3.sum(layerData,
+          (dataItem) => dataItem.width)))
+    maxY = d3.max(_.values(data),
+      (pageData) => d3.max(_.values(pageData),
+        (layerData) => d3.max(layerData,
+          (dataItem) => dataItem.height)))
+    console.log(maxX)
+    console.log(maxY)
     newXScale = d3.scale.linear()
-      .domain([0, totalX])
+      .domain([0, maxX])
       .range [@margin, @width - @margin]
     newYScale = d3.scale.linear()
       .domain([0, maxY])

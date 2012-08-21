@@ -16,17 +16,28 @@
           <label>
             Data<br>
             <textarea rows=20 cols=50 id="data">
-series,title,subtitle,width,height
-main,Foo,a,96,50
-main,Bar,a,51,50
-main,Bar,b,12.5,73
-main,Bar,c,156,93
-main,Bar,d,67.5,63
-main,Zed,a,32,145
-main,Baz,a,335,100
-main,Baz,a,157.50,65
-overlay,Transparent,a,600,30
-overlay,Transparent,b,200,20</textarea>
+page,series,title,subtitle,width,height
+1,main,Foo,a,96,50
+1,main,Bar,a,51,50
+1,main,Bar,b,12.5,73
+1,main,Bar,c,156,93
+1,main,Bar,d,67.5,63
+1,main,Zed,a,32,145
+1,main,Baz,a,335,100
+1,main,Baz,a,157.50,65
+1,overlay,Transparent,a,600,30
+1,overlay,Transparent,b,200,20
+2,main,Foo,a,90,40
+2,main,Bar,a,52,50
+2,main,Bar,b,12.5,73
+2,main,Bar,d,67.5,63
+2,main,Bar,3,67.5,63
+2,main,Zed,a,32,145
+2,main,Zed,a,45,170
+2,main,Baz,a,335,100
+2,main,Baz,a,157.50,65
+2,overlay,Transparent,a,600,30
+2,overlay,Transparent,b,210,40</textarea>
           </label>
         </td>
         <td>
@@ -66,6 +77,7 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
 
         var data = d3.csv.parse(csv_data).map(function(d) {
           return {
+            page: d.page,
             series: d.series,
             title: d.title,
             subtitle: d.subtitle,
@@ -74,7 +86,7 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
           };
         });
 
-        chart.draw(data, styles);
+        chart.setData(data, styles);
         return false;
       });
     });
