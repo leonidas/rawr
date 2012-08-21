@@ -9,6 +9,7 @@ class Chart
       .style("width", @width)
       .style("height", @height)
     @axesCanvas = @getLayerCanvas("axes")
+    @styles = {}
 
   setStyles: (@styles) =>
 

@@ -9,10 +9,10 @@
   <script src="lib/rawr.js"></script>
 </head>
 <body>
-  <form id="rawr">
-    <table>
-      <tr>
-        <td>
+  <table>
+    <tr>
+      <td>
+        <form id="data-form">
           <label>
             Data<br>
             <textarea rows=20 cols=50 id="data">
@@ -24,7 +24,7 @@ page,series,title,subtitle,width,height
 1,main,Bar,d,67.5,63
 1,main,Zed,a,32,145
 1,main,Baz,a,335,100
-1,main,Baz,a,157.50,65
+1,main,Baz,b,157.50,65
 1,overlay,Transparent,a,600,30
 1,overlay,Transparent,b,200,20
 2,main,Foo,a,90,40
@@ -35,12 +35,15 @@ page,series,title,subtitle,width,height
 2,main,Zed,a,32,145
 2,main,Zed,a,45,170
 2,main,Baz,a,335,100
-2,main,Baz,a,157.50,65
+2,main,Baz,b,157.50,65
 2,overlay,Transparent,a,600,30
 2,overlay,Transparent,b,210,40</textarea>
-          </label>
-        </td>
-        <td>
+          </label><br>
+          <input type="submit" value="Set data">
+        </form>
+      </td>
+      <td>
+        <form id="styles-form">
           <label>
             Styles<br>
             <textarea rows=20 cols=50 id="styles">
@@ -50,12 +53,12 @@ Bar,background: #79F;
 Zed,background: #B84;
 Baz,background: #FD4;
 Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
-          </label>
-        </td>
-      </tr>
-    </table>
-    <input type="submit" value="Draw"></a>
-  </form>
+          </label><br>
+          <input type="submit" value="Set styles">
+        </form>
+      </td>
+    </tr>
+  </table>
 
   <div id="chart"></div>
   <script>
@@ -89,9 +92,13 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
         chart.setData(data);
       }
 
-      $("form#rawr").submit(function() {
-        setStyles();
+      $("form#data-form").submit(function() {
         setData();
+        return false;
+      });
+
+      $("form#styles-form").submit(function() {
+        setStyles();
         return false;
       });
     });
