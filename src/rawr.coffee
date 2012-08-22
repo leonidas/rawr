@@ -8,37 +8,37 @@ class Chart
       .style("position", "relative")
       .style("width", @width)
       .style("height", @height)
-    @axesCanvas = @getLayerCanvas("axes")
+    @axesCanvas = @_getLayerCanvas("axes")
     @allTimeSeriesNames = []
 
   setData: (data) =>
-    @data = @hierarchizeData(data)
+    @data = @_hierarchizeData(data)
     @pageNames = _.keys(@data)
-    @allTimeSeriesNames = @trackAllTimeSeriesNames(@allTimeSeriesNames, @data)
+    @allTimeSeriesNames = @_trackAllTimeSeriesNames(@allTimeSeriesNames, @data)
     @currentPageNumber = 0
 
-    @calculateScale(@data)
-    @drawXLabels()
-    @drawYLabels()
-    @drawPage(@pageNames[@currentPageNumber])
+    @_calculateScale(@data)
+    @_drawXLabels()
+    @_drawYLabels()
+    @_drawPage(@pageNames[@currentPageNumber])
 
-  drawPage: (pageName) =>
+  _drawPage: (pageName) =>
     _.each(@allTimeSeriesNames, (seriesName) =>
-      @updateDataLayer(seriesName, @data[pageName][seriesName] ? [])
+      @_updateDataLayer(seriesName, @data[pageName][seriesName] ? [])
     )
 
-  hierarchizeData: (data) =>
+  _hierarchizeData: (data) =>
     hierarchicalData = _.groupBy(data, "page")
     _.each(_.keys(hierarchicalData), (page) =>
       hierarchicalData[page] = _.groupBy(hierarchicalData[page], "series")
     )
     return hierarchicalData
 
-  trackAllTimeSeriesNames: (allTimeSeriesNames, data) =>
+  _trackAllTimeSeriesNames: (allTimeSeriesNames, data) =>
     currentSeriesNames = _.uniq(_.flatten(_.map(data, (pageData) -> _.keys(pageData))))
     _.uniq(allTimeSeriesNames.concat(currentSeriesNames))
 
-  getLayerCanvas: (layerName) =>
+  _getLayerCanvas: (layerName) =>
     @canvases ?= {}
     @canvases[layerName] ?= @parent.append('div')
       .classed("#{layerName}Layer", true)
@@ -48,7 +48,7 @@ class Chart
       .style("width", @width)
       .style("height", @height)
 
-  calculateScale: (data) =>
+  _calculateScale: (data) =>
     maxX = d3.max(_.values(data),
       (pageData) => d3.max(_.values(pageData),
         (layerData) => d3.sum(layerData,
@@ -68,7 +68,7 @@ class Chart
     @xScale = newXScale
     @yScale = newYScale
 
-  drawXLabels: () =>
+  _drawXLabels: () =>
     labelWidth = 30
 
     @xLabels = @axesCanvas
@@ -100,7 +100,7 @@ class Chart
       .remove()
 
 
-  drawYLabels: () =>
+  _drawYLabels: () =>
     labelHeight = 12
 
     @yLabels = @axesCanvas
@@ -132,7 +132,7 @@ class Chart
       .style("opacity", "0")
       .remove()
 
-  addOwnParamsToData: (data) =>
+  _addOwnParamsToData: (data) =>
     groupCounts = {}
     _(data).each((d) => 
       groupCounts[d.title] ?= 0
@@ -146,10 +146,10 @@ class Chart
       accumulator += d.width
     )
 
-  updateDataLayer: (layerName, data) =>
-    @addOwnParamsToData(data)
+  _updateDataLayer: (layerName, data) =>
+    @_addOwnParamsToData(data)
 
-    chartCanvas = @getLayerCanvas(layerName)
+    chartCanvas = @_getLayerCanvas(layerName)
 
     xScale = @xScale
     yScale = @yScale
