@@ -1,6 +1,6 @@
 
 class Chart
-  constructor: (where, @width, @height, @margin) ->
+  constructor: (where, @width, @height, @margin, @styles) ->
     @parent = where.append('div')
       .classed("backgroundCanvas", true)
       .style("font-family", "Helvetica")
@@ -9,9 +9,6 @@ class Chart
       .style("width", @width)
       .style("height", @height)
     @axesCanvas = @getLayerCanvas("axes")
-    @styles = {}
-
-  setStyles: (@styles) =>
 
   setData: (data) =>
     @data = @hierarchizeData(data)
@@ -151,7 +148,7 @@ class Chart
     )
 
     accumulator = 0
-    _(data).map((d) =>
+    _(data).each((d) =>
       d.__startX__ = accumulator
       accumulator += d.width
     )

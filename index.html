@@ -54,7 +54,7 @@ Zed,background: #B84;
 Baz,background: #FD4;
 Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
           </label><br>
-          <input type="submit" value="Set styles">
+          <input type="submit" value="Reset chart with styles">
         </form>
       </td>
     </tr>
@@ -66,7 +66,7 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
       var margin = 25;
       var width = 800;
       var height = 500;
-      var chart = new window.Chart(d3.select('div#chart'), width, height, margin);
+      var chart;
 
       var setStyles = function() {
         var csv_styles = $("#styles").val();
@@ -74,7 +74,8 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
           result[pair.title] = pair.style;
           return result;
         }), {});
-        chart.setStyles(styles);        
+        $("#chart").empty();
+        chart = new window.Chart(d3.select('div#chart'), width, height, margin, styles);
       };
 
       var setData = function() {
@@ -99,8 +100,12 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
 
       $("form#styles-form").submit(function() {
         setStyles();
+        setData();
         return false;
       });
+
+      setStyles();
+      setData();      
     });
   </script>
 </body>
