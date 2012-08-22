@@ -9,10 +9,12 @@ class Chart
       .style("width", @width)
       .style("height", @height)
     @axesCanvas = @getLayerCanvas("axes")
+    @allTimeSeriesNames = []
 
   setData: (data) =>
     @data = @hierarchizeData(data)
     @pageNames = _.keys(@data)
+    @allTimeSeriesNames = @trackAllTimeSeriesNames(@allTimeSeriesNames, @data)
     @currentPageNumber = 0
 
     @calculateScale(@data)
@@ -21,9 +23,8 @@ class Chart
     @drawPage(@pageNames[@currentPageNumber])
 
   drawPage: (pageName) =>
-    _.each(@data[pageName],
-      (seriesData, seriesName) => 
-        @updateDataLayer(seriesName, seriesData)
+    _.each(@allTimeSeriesNames, (seriesName) =>
+      @updateDataLayer(seriesName, @data[pageName][seriesName] ? [])
     )
 
   hierarchizeData: (data) =>
@@ -33,15 +34,9 @@ class Chart
     )
     return hierarchicalData
 
-  getLayerCanvas: (layerName) =>
-    @canvases ?= {}
-    @canvases[layerName] ?= @parent.append('div')
-      .classed("#{layerName}Layer", true)
-      .style("position", "absolute")
-      .style("left", 0)
-      .style("right", 0)
-      .style("width", @width)
-      .style("height", @height)
+  trackAllTimeSeriesNames: (allTimeSeriesNames, data) =>
+    currentSeriesNames = _.uniq(_.flatten(_.map(data, (pageData) -> _.keys(pageData))))
+    _.uniq(allTimeSeriesNames.concat(currentSeriesNames))
 
   getLayerCanvas: (layerName) =>
     @canvases ?= {}
@@ -62,8 +57,6 @@ class Chart
       (pageData) => d3.max(_.values(pageData),
         (layerData) => d3.max(layerData,
           (dataItem) => dataItem.height)))
-    console.log(maxX)
-    console.log(maxY)
     newXScale = d3.scale.linear()
       .domain([0, maxX])
       .range [@margin, @width - @margin]
