@@ -10,16 +10,22 @@ class Chart
       .style("height", @height)
     @axesCanvas = @_getLayerCanvas("axes")
     @allTimeSeriesNames = []
+    @pageCount = 0
 
   setData: (data) =>
     @data = @_hierarchizeData(data)
     @pageNames = _.keys(@data)
-    @allTimeSeriesNames = @_trackAllTimeSeriesNames(@allTimeSeriesNames, @data)
+    @pageCount = @pageNames.length
     @currentPageNumber = 0
+    @allTimeSeriesNames = @_trackAllTimeSeriesNames(@allTimeSeriesNames, @data)
 
     @_calculateScale(@data)
     @_drawXLabels()
     @_drawYLabels()
+    @_drawPage(@pageNames[@currentPageNumber])
+
+  setPageNumber: (pageNumber) =>
+    @currentPageNumber = _.max([0, _.min([pageNumber, @pageNames.length])])
     @_drawPage(@pageNames[@currentPageNumber])
 
   _drawPage: (pageName) =>

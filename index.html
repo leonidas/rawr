@@ -61,6 +61,7 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
   </table>
 
   <div id="chart"></div>
+  <div id="page-links"></div>
   <script>
     $(document).ready(function() {
       var margin = 25;
@@ -91,21 +92,37 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
           };
         });
         chart.setData(data);
-      }
+      };
+
+      var createPageLinks = function() {
+        $("#page-links").empty();
+        for (var i = 0; i < chart.pageCount; ++i) {
+          $("#page-links").append("<a href=\"#\" class=\"page-link\" data-page=\"" + i + "\">" + i + "</a> ")
+        }
+      };
 
       $("form#data-form").submit(function() {
         setData();
+        createPageLinks();
         return false;
       });
 
       $("form#styles-form").submit(function() {
         setStyles();
         setData();
+        createPageLinks();
+        return false;
+      });
+
+      $(document).on("click", "a.page-link", function() {
+        var pageNumber = $(this).data("page");
+        chart.setPageNumber(pageNumber);
         return false;
       });
 
       setStyles();
-      setData();      
+      setData();
+      createPageLinks();
     });
   </script>
 </body>
