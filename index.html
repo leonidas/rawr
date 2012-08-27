@@ -109,9 +109,9 @@ Expenses,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
 
       var createPageLinks = function() {
         $("#page-links").empty();
-        for (var i = 0; i < chart.pageCount; ++i) {
-          $("#page-links").append("<a href=\"#\" class=\"page-link\" data-page=\"" + i + "\">" + i + "</a> ")
-        }
+        _.each(chart.pageNames, function (name, index) {
+          $("#page-links").append("<a href=\"#\" class=\"page-link\" data-page=\"" + index + "\">" + name + "</a> ");
+        });
       };
 
       var createSlider = function() {
