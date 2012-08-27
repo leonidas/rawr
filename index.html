@@ -19,27 +19,35 @@
             Data<br>
             <textarea rows=20 cols=50 id="data">
 page,series,title,subtitle,width,height
-1,main,Foo,a,96,50
-1,main,Bar,a,51,50
-1,main,Bar,b,12.5,73
-1,main,Bar,c,156,93
-1,main,Bar,d,67.5,63
-1,main,Zed,a,32,145
-1,main,Baz,a,335,100
-1,main,Baz,b,157.50,65
-1,overlay,Transparent,a,600,30
-1,overlay,Transparent,b,200,20
-2,main,Foo,a,90,40
-2,main,Bar,a,52,50
-2,main,Bar,b,12.5,73
-2,main,Bar,d,67.5,63
-2,main,Bar,3,67.5,63
-2,main,Zed,a,32,145
-2,main,Zed,a,45,170
-2,main,Baz,a,335,100
-2,main,Baz,b,157.50,65
-2,overlay,Transparent,a,600,30
-2,overlay,Transparent,b,210,40</textarea>
+2001,sales,Widgets,a,96,50
+2001,sales,Thingies,a,51,50
+2001,sales,Thingies,b,12.5,73
+2001,sales,Thingies,c,156,93
+2001,sales,Thingies,d,67.5,63
+2001,sales,Stuff,a,32,145
+2001,sales,Apparatuses,a,335,100
+2001,sales,Apparatuses,b,157.50,65
+2001,expenses,Expenses,a,600,30
+2001,expenses,Expenses,b,200,20
+2002,sales,Widgets,a,90,40
+2002,sales,Thingies,a,52,50
+2002,sales,Thingies,b,12.5,73
+2002,sales,Thingies,d,67.5,63
+2002,sales,Thingies,3,67.5,63
+2002,sales,Stuff,a,32,145
+2002,sales,Stuff,b,45,170
+2002,sales,Apparatuses,a,335,100
+2002,sales,Apparatuses,b,157.50,65
+2002,expenses,Expenses,a,600,30
+2002,expenses,Expenses,b,210,40
+2003,sales,Widgets,a,100,30
+2003,sales,Thingies,a,42,45
+2003,sales,Thingies,3,57.5,62
+2003,sales,Stuff,a,42,140
+2003,sales,Apparatuses,a,235,90
+2003,sales,Apparatuses,b,157,60
+2003,expenses,Expenses,a,610,30
+</textarea>
           </label><br>
           <input type="submit" value="Set data">
         </form>
@@ -50,11 +58,11 @@ page,series,title,subtitle,width,height
             Styles<br>
             <textarea rows=20 cols=50 id="styles">
 title,style
-Foo,background: #E9D;
-Bar,background: #79F;
-Zed,background: #B84;
-Baz,background: #FD4;
-Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
+Widgets,background: #E9D;
+Thingies,background: #79F;
+Stuff,background: #B84;
+Apparatuses,background: #FD4;
+Expenses,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
           </label><br>
           <input type="submit" value="Reset chart with styles">
         </form>
@@ -63,9 +71,9 @@ Transparent,"background:rgba(255,0,0,0.2);border:solid 1px red;"</textarea>
   </table>
 
   <div id="chart-chrome" style="width: 800">
-    <div id="chart"></div>
-    <div id="slider"></div>
     <div id="page-links"></div>
+    <div id="slider"></div>
+    <div id="chart"></div>
   </div>
   <script>
     $(document).ready(function() {
